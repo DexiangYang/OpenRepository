@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.{Object}Mapper">
+    
+    <resultMap type="{Object}" id="{Object}Result">
+        <result property="{object}Id"    column="{object}_id"    />
+        {resultMapDefine}
+        <!-- <result property="parentId"    column="parent_id"    /> -->
+    </resultMap>
+	
+	<sql id="select{Object}Vo">
+        select * from {sheet}
+    </sql>
+	
+    <select id="select{Object}List" parameterType="{Object}" resultMap="{Object}Result">
+        <include refid="select{Object}Vo"/>
+        <where>  
+            <if test="{object}Id != null "> and {object}_id = #{{object}Id}</if>
+            {selectListDefine}
+            <!-- <if test="parentId != null "> and parent_id = #{parentId}</if> -->
+         </where>
+    </select>
+    
+    <select id="select{Object}ById" parameterType="Integer" resultMap="{Object}Result">
+        <include refid="select{Object}Vo"/>
+        where {object}_id = #{{object}Id}
+    </select>
+        
+    <insert id="insert{Object}" parameterType="{Object}" useGeneratedKeys="true" keyProperty="{object}Id">
+        insert into {sheet}
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+            {insertKeyDefine}
+			<!-- <if test="parentId != null  ">parent_id,</if> -->
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            {insertValueDefine}
+			<!-- <if test="parentId != null  ">#{parentId},</if> -->
+         </trim>
+    </insert>
+	 
+    <update id="update{Object}" parameterType="{Object}">
+        update {sheet}
+        <trim prefix="SET" suffixOverrides=",">
+            {updateDefine}
+            <!-- <if test="parentId != null  ">parent_id = #{parentId},</if> -->
+        </trim>
+        where {object}_id = #{{object}Id}
+    </update>
+
+	<delete id="delete{Object}ById" parameterType="Integer">
+        delete from {sheet} where {object}_id = #{{object}Id}
+    </delete>
+	
+    <delete id="delete{Object}ByIds" parameterType="String">
+        delete from {sheet} where {object}_id in 
+        <foreach item="{object}Id" collection="array" open="(" separator="," close=")">
+            #{{object}Id}
+        </foreach>
+    </delete>
+    
+</mapper>
